@@ -14,6 +14,9 @@ cargo install git-push-check
 
 Run `git-push-check` in a git repository to check if the current HEAD is pushed to the remote.
 
+> [!TIP]
+> You may want to `git fetch` before running `git-push-check`.
+
 Options:
 
 - `--only`: Which remote references to check: branches, tags, or all (default: all)
