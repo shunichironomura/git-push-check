@@ -5,7 +5,7 @@
 A CLI tool to check if HEAD is pushed to remote.
 
 > [!TIP]
-> Depending on your needs, running `git branch -r --contains HEAD` or `git tag --contains HEAD` and checking if the output contains the remote branch or tag may be enough.
+> Depending on your needs, running `git branch -r --contains HEAD` and checking if the output contains the remote branch or tag may be enough.
 
 ## Installation
 
