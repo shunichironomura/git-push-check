@@ -2,13 +2,38 @@
 name = "git-push-check"
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.89"
 description = "A CLI tool to check if HEAD is pushed to remote"
 readme = "README.md"
 repository = "https://github.com/shunichironomura/git-push-check"
 license = "MIT"
+
+[workspace.lints.rust]
+unsafe-code = "warn"
 
 [dependencies]
 clap = { version = "4.5.32", features = ["derive"] }
 env_logger = "0.11.7"
 git2 = "0.20.1"
 log = "0.4.26"
+
+[lints.clippy]
+all = "warn"
+allow_attributes = { level = "warn", priority = 1 }
+allow_attributes_without_reason = { level = "warn", priority = 1 }
+cargo = { level = "warn", priority = -1 }
+dbg_macro = { level = "warn", priority = 1 }
+else_if_without_else = { level = "warn", priority = 1 }
+expect_used = { level = "warn", priority = 1 }
+indexing_slicing = { level = "warn", priority = 1 }
+missing_errors_doc = { level = "warn", priority = 1 }
+missing_panics_doc = { level = "warn", priority = 1 }
+nursery = { level = "warn", priority = -1 }
+panic = { level = "warn", priority = 1 }
+pedantic = { level = "warn", priority = -1 }
+print_stderr = { level = "warn", priority = 1 }
+print_stdout = { level = "warn", priority = 1 }
+todo = { level = "warn", priority = 1 }
+undocumented_unsafe_blocks = { level = "warn", priority = 1 }
+unimplemented = { level = "warn", priority = 1 }
+unwrap_used = { level = "warn", priority = 1 }
