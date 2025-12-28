@@ -7,6 +7,8 @@ description = "A CLI tool to check if HEAD is pushed to remote"
 readme = "README.md"
 repository = "https://github.com/shunichironomura/git-push-check"
 license = "MIT"
+keywords = ["cli", "git", "tool"]
+categories = ["command-line-utilities", "development-tools::version-control"]
 
 [workspace.lints.rust]
 unsafe-code = "warn"
