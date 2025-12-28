@@ -30,13 +30,13 @@ fn main() {
     env_logger::init();
 
     let args = Cli::parse();
-    debug!("Parsed arguments: {:?}", args);
+    debug!("Parsed arguments: {args:?}");
 
     match run(&args.only) {
         Ok(true) => process::exit(0),
         Ok(false) => process::exit(2),
         Err(e) => {
-            error!("Error: {}", e);
+            error!("Error: {e}");
             process::exit(1);
         }
     }
@@ -45,7 +45,7 @@ fn main() {
 fn run(only: &Only) -> Result<bool, Box<dyn std::error::Error>> {
     // Open the repository from the current directory or an ancestor.
     let repo = Repository::open_from_env()?;
-    debug!("Opened repository: {:?}", repo.path());
+    debug!("Opened repository: {:}", repo.path().display());
 
     // Get the current commit (HEAD)
     let head_ref = repo.head()?;
@@ -58,21 +58,19 @@ fn run(only: &Only) -> Result<bool, Box<dyn std::error::Error>> {
     if *only == Only::Branches || *only == Only::All {
         for reference in repo.references()? {
             let reference = reference?;
-            if let Some(name) = reference.name() {
-                if name.starts_with("refs/remotes/") {
-                    if let Ok(remote_commit) = reference.peel_to_commit() {
-                        // Check if the remote branch tip equals HEAD or contains HEAD in its history.
-                        if remote_commit.id() == current_oid
-                            || repo.graph_descendant_of(remote_commit.id(), current_oid)?
-                        {
-                            println!(
-                                "Local HEAD ({}) is pushed (found in remote branch: {}).",
-                                current_oid, name
-                            );
-                            pushed = true;
-                            break;
-                        }
-                    }
+            if let Some(name) = reference.name()
+                && name.starts_with("refs/remotes/")
+                && let Ok(remote_commit) = reference.peel_to_commit()
+            {
+                // Check if the remote branch tip equals HEAD or contains HEAD in its history.
+                if remote_commit.id() == current_oid
+                    || repo.graph_descendant_of(remote_commit.id(), current_oid)?
+                {
+                    println!(
+                        "Local HEAD ({current_oid}) is pushed (found in remote branch: {name}).",
+                    );
+                    pushed = true;
+                    break;
                 }
             }
         }
@@ -82,19 +80,16 @@ fn run(only: &Only) -> Result<bool, Box<dyn std::error::Error>> {
     if !pushed && (*only == Only::Tags || *only == Only::All) {
         for reference in repo.references()? {
             let reference = reference?;
-            if let Some(name) = reference.name() {
-                if name.starts_with("refs/tags/") {
-                    // For annotated tags, peel to the commit they reference.
-                    if let Ok(tag_commit) = reference.peel_to_commit() {
-                        if tag_commit.id() == current_oid {
-                            println!(
-                                "Local HEAD ({}) is pushed (found in remote tag: {}).",
-                                current_oid, name
-                            );
-                            pushed = true;
-                            break;
-                        }
-                    }
+            if let Some(name) = reference.name()
+                && name.starts_with("refs/tags/")
+            {
+                // For annotated tags, peel to the commit they reference.
+                if let Ok(tag_commit) = reference.peel_to_commit()
+                    && tag_commit.id() == current_oid
+                {
+                    println!("Local HEAD ({current_oid}) is pushed (found in remote tag: {name}).",);
+                    pushed = true;
+                    break;
                 }
             }
         }
@@ -103,7 +98,7 @@ fn run(only: &Only) -> Result<bool, Box<dyn std::error::Error>> {
     if pushed {
         Ok(true)
     } else {
-        println!("Local HEAD ({}) is NOT pushed to remote.", current_oid);
+        println!("Local HEAD ({current_oid}) is NOT pushed to remote.");
         Ok(false)
     }
 }
